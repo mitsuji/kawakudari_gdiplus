@@ -6,16 +6,16 @@ using IchigoJam;
 public class Kawakudari: Form
 {
     private Std15 std15;
-    private Random rnd;
     private uint frame;
+    private Random rnd;
     private int x;
     private bool running;
 
     private void OnSetup ()
     {
-        std15 = new Std15(512,384,32,24);
-        rnd = new Random();
+        std15 = new Std15(512,384,32,24,this);
         frame = 0;
+        rnd = new Random();
         x = 15;
         running = true;
     }
@@ -47,8 +47,7 @@ public class Kawakudari: Form
 
     private void OnPaint ()
     {
-        std15.DrawScreen(buff.Graphics);
-        buff.Render(Graphics.FromHwnd(Handle));
+        std15.DrawScreen();
     }
 
     static public void Main ()
@@ -56,21 +55,18 @@ public class Kawakudari: Form
         Application.Run(new Kawakudari());
     }
 
-    private BufferedGraphics buff;
     private Timer timer;
 
     public Kawakudari ()
     {
         Size = new Size(512+20,384+40);
-        Rectangle buffRect = new Rectangle(0,0,512,384);
-        buff = BufferedGraphicsManager.Current.Allocate(CreateGraphics(),buffRect);
 
         KeyDown += OnKeyDown;
-	timer = new Timer();
-	timer.Tick += OnTick;
-	timer.Interval = 16;
-	OnSetup();
-	timer.Start();
+        timer = new Timer();
+        timer.Tick += OnTick;
+        timer.Interval = 16;
+        OnSetup();
+        timer.Start();
     }
 
     private void OnTick (object sender, EventArgs e)

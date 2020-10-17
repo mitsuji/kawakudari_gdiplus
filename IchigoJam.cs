@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace IchigoJam
 {
@@ -23,8 +24,10 @@ public class Std15
   private char[] buff;
   private int cursorX = 0;
   private int cursorY = 0;
+  private Graphics graphics;
+  private BufferedGraphics bufferedGraphics;
   
-  public Std15 (int screenW, int screenH, int buffW, int buffH)
+  public Std15 (int screenW, int screenH, int buffW, int buffH, Control control)
   {
     this.screenW = screenW;
     this.screenH = screenH;
@@ -33,6 +36,10 @@ public class Std15
     this.dotW = screenW / buffW / CHAR_W;
     this.dotH = screenH / buffH / CHAR_H;
     this.buff = new char [buffW * buffH];
+
+    this.graphics = Graphics.FromHwnd(control.Handle);
+    Rectangle bgRect = new Rectangle(0,0,screenW,screenH);
+    this.bufferedGraphics = BufferedGraphicsManager.Current.Allocate(control.CreateGraphics(),bgRect);
   }
 
   public void Locate (int x, int y) {
@@ -140,13 +147,15 @@ public class Std15
     }
   }
 
-  public void DrawScreen (Graphics g) {
-    g.Clear(Color.Black);
+  public void DrawScreen () {
+    Graphics bg = bufferedGraphics.Graphics;
+    bg.Clear(Color.Black);
     for (int y = 0; y < buffH; y++) {
       for (int x = 0; x < buffW; x++) {
-        DrawChar (g, x, y, Scr(x,y));
+        DrawChar (bg, x, y, Scr(x,y));
       }
     }
+    bufferedGraphics.Render(graphics);
   }
 
 

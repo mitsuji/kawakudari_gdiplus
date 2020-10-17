@@ -6,9 +6,9 @@ It will allow programming for [IchigoJam](https://ichigojam.net/index-en.html)-l
 ```
     private void OnSetup ()
     {
-        std15 = new Std15(512,384,32,24);
-        rnd = new Random();
+        std15 = new Std15(512,384,32,24,this);
         frame = 0;
+        rnd = new Random();
         x = 15;
         running = true;
     }
